@@ -29,7 +29,14 @@ const AppState = {
   }
 };
 
-const WHATSAPP_PHONE = "34614697891";
+const WHATSAPP_PHONE = ""; // Dejado en blanco para personalización
+
+function getWhatsAppLink(text) {
+  if (WHATSAPP_PHONE && WHATSAPP_PHONE.trim() !== "") {
+    return `https://wa.me/${WHATSAPP_PHONE.trim()}?text=${encodeURIComponent(text)}`;
+  }
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
@@ -42,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initValuationWizard();
   initModals();
   initComparisonDock();
+  initMobileDrawer();
   updateFacetCounts();
   applyFiltersAndRender();
 });
@@ -411,8 +419,8 @@ function renderVehiclesGrid(vehicles) {
       <span class="card-dot ${idx === currentIndex ? 'active' : ''}"></span>
     `).join('');
 
-    const waText = encodeURIComponent(`Hola, me interesa el ${v.brand} ${v.model} (${v.year}, ${v.financedPrice.toLocaleString('es-ES')}€, Ref:${v.id}) disponible en Automóviles Fines.`);
-    const waLink = `https://wa.me/${WHATSAPP_PHONE}?text=${waText}`;
+    const waText = `Hola, me interesa el ${v.brand} ${v.model} (${v.year}, ${v.financedPrice.toLocaleString('es-ES')}€, Ref:${v.id}) disponible en el catálogo.`;
+    const waLink = getWhatsAppLink(waText);
 
     const isFav = AppState.favorites.includes(v.id);
     const isCompared = AppState.comparedVehicleIds.includes(v.id);
@@ -1198,8 +1206,8 @@ function recalculateMonthlyInstallment(vehicle) {
 
   const btnFinanceWa = document.getElementById('btn-request-financing-wa');
   if (btnFinanceWa) {
-    const msg = encodeURIComponent(`Hola, solicito estudio de financiación para el ${vehicle.brand} ${vehicle.model} (Ref: ${vehicle.id}). Cuota estimada: ${installment}€/mes con ${down}€ de entrada en ${n} meses.`);
-    btnFinanceWa.href = `https://wa.me/${WHATSAPP_PHONE}?text=${msg}`;
+    const msg = `Hola, solicito estudio de financiación para el ${vehicle.brand} ${vehicle.model} (Ref: ${vehicle.id}). Cuota estimada: ${installment}€/mes con ${down}€ de entrada en ${n} meses.`;
+    btnFinanceWa.href = getWhatsAppLink(msg);
   }
 }
 
@@ -1209,8 +1217,8 @@ function updateVdpConversionBar(vehicle) {
 
   const waBtn = document.getElementById('vdp-whatsapp-direct-btn');
   if (waBtn) {
-    const text = encodeURIComponent(`Hola, deseo solicitar información sobre el ${vehicle.brand} ${vehicle.model} ${vehicle.version} (Ref: ${vehicle.id}) publicado en la web.`);
-    waBtn.href = `https://wa.me/${WHATSAPP_PHONE}?text=${text}`;
+    const text = `Hola, deseo solicitar información sobre el ${vehicle.brand} ${vehicle.model} ${vehicle.version} (Ref: ${vehicle.id}) publicado en la web.`;
+    waBtn.href = getWhatsAppLink(text);
   }
 
   const reserveCarName = document.getElementById('reserve-car-name');
@@ -1279,8 +1287,8 @@ function initValuationWizard() {
       const year = document.getElementById('val-year').value;
       const est = document.getElementById('val-estimated-range').textContent;
 
-      const text = encodeURIComponent(`Hola Automóviles Fines, solicito tasación para mi vehículo con matrícula ${plate} (${year}, ${km} km). Estimación obtenida: ${est}. Mi teléfono es ${phone}.`);
-      window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${text}`, '_blank');
+      const text = `Hola, solicito tasación para mi vehículo con matrícula ${plate} (${year}, ${km} km). Estimación obtenida: ${est}. Mi teléfono es ${phone}.`;
+      window.open(getWhatsAppLink(text), '_blank');
     });
   }
 }
@@ -1356,6 +1364,48 @@ function initModals() {
       if (reserveBackdrop) reserveBackdrop.classList.remove('active');
       const compModal = document.getElementById('compare-modal-backdrop');
       if (compModal) compModal.classList.remove('active');
+      const drawer = document.getElementById('mobile-drawer');
+      const overlay = document.getElementById('mobile-drawer-overlay');
+      if (drawer) drawer.classList.remove('open');
+      if (overlay) overlay.classList.remove('open');
+      document.body.style.overflow = '';
     }
   });
 }
+
+/* ==========================================================================
+   MENÚ MÓVIL DRAWER
+   ========================================================================== */
+
+function initMobileDrawer() {
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('mobile-drawer-overlay');
+  const closeBtn = document.getElementById('btn-drawer-close');
+  const navItems = document.querySelectorAll('.drawer-nav-item, .btn-drawer-sell, .btn-drawer-whatsapp');
+
+  if (!toggleBtn || !drawer || !overlay) return;
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  toggleBtn.addEventListener('click', openDrawer);
+  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      closeDrawer();
+    });
+  });
+}
+

@@ -500,8 +500,8 @@ function renderVehiclesGrid(vehicles) {
               <span class="spec-pill-value" style="font-size: 0.775rem;">${v.transmission.split(' ')[0]}</span>
             </div>
             <div class="spec-pill">
-              <span class="spec-pill-label">Garantía</span>
-              <span class="spec-pill-value" style="color: var(--color-red);">${v.warrantyMonths} Meses</span>
+              <span class="spec-pill-label">Disponibilidad</span>
+              <span class="spec-pill-value" style="color: var(--color-red);">Inmediata</span>
             </div>
           </div>
 
@@ -776,8 +776,8 @@ function openComparisonModal() {
           ${comparedList.map(v => `<td>${v.technicalSpecs.trunkCapacity}</td>`).join('')}
         </tr>
         <tr>
-          <th>Garantía Oficial</th>
-          ${comparedList.map(v => `<td style="color: var(--color-red); font-weight: 800;">${v.warrantyMonths} Meses Garantía Europea</td>`).join('')}
+          <th>Disponibilidad</th>
+          ${comparedList.map(v => `<td style="color: var(--color-red); font-weight: 800;">Entrega Inmediata</td>`).join('')}
         </tr>
       </tbody>
     </table>
@@ -885,9 +885,6 @@ function renderVdpContent(vehicle) {
           <span class="dgt-badge-pill ${dgtClass}">DGT ${vehicle.dgtBadge}</span>
           <span class="badge-deal-rating">AHORRO: -${vehicle.marketSavings}€ VS MERCADO</span>
           <span class="badge-deal-rating" style="background: var(--bg-dark); border-left-color: #FFFFFF;">ENTREGA INMEDIATA</span>
-          <span style="background: #F4F4F6; color: var(--text-main); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: var(--radius-xs); border: 1px solid var(--border-medium);">
-            ${vehicle.warrantyMonths} MESES GARANTÍA
-          </span>
           <span style="background: #F4F4F6; color: var(--text-muted); font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: var(--radius-xs);">
             REF: ${vehicle.id}
           </span>
@@ -916,7 +913,6 @@ function renderVdpContent(vehicle) {
     <div class="vdp-tabs-nav">
       <button class="vdp-tab-btn active" onclick="switchVdpTab('equipment', this)">Equipamiento Destacado</button>
       <button class="vdp-tab-btn" onclick="switchVdpTab('dgt-cert', this)">Certificado Oficial DGT</button>
-      <button class="vdp-tab-btn" onclick="switchVdpTab('inspection', this)">Inspección 150 Puntos</button>
       <button class="vdp-tab-btn" onclick="switchVdpTab('wear', this)">Transparencia de Estado</button>
       <button class="vdp-tab-btn" onclick="switchVdpTab('specs', this)">Ficha Técnica</button>
     </div>
@@ -975,15 +971,7 @@ function renderVdpContent(vehicle) {
       </div>
     </div>
 
-    <!-- Pestaña: Inspección 150 Puntos -->
-    <div class="vdp-tab-pane" id="vdp-pane-inspection">
-      <div style="margin-bottom: 18px; background: #FFFFFF; border: 1px solid var(--border-medium); border-left: 4px solid var(--color-red); padding: 16px 20px; border-radius: var(--radius-xs); font-size: 0.875rem; color: var(--text-main);">
-        <strong>Certificación Oficial Automóviles Fines:</strong> Este vehículo ha superado satisfactoriamente el protocolo técnico de diagnosis electrónica, prueba de compresión, frenómetro y revisión de chasis.
-      </div>
-      <div class="inspection-accordion-group">
-        ${inspectionHtml}
-      </div>
-    </div>
+
 
     <!-- Pestaña: Desgaste -->
     <div class="vdp-tab-pane" id="vdp-pane-wear">
